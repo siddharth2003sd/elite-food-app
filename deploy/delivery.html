@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier App | Elite Food</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --primary-grad: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            --secondary: #1e272e;
+            --bg: #f8fafc;
+            --radius: 20px;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: #2d3436;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Auth --- */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* --- App Header --- */
+        .header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h3 {
+            font-family: 'Poppins';
+            color: var(--primary);
+        }
+
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f2f6;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .switch {
+            width: 40px;
+            height: 20px;
+            background: #ced4da;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: 0.3s;
+        }
+
+        .switch.on {
+            background: #40c057;
+        }
+
+        .switch.on::after {
+            left: 22px;
+        }
+
+        /* --- Feed --- */
+        .feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            border: 1px solid #f1f2f6;
+        }
+
+        .order-card h4 {
+            font-family: 'Poppins';
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .btn-big {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 18px;
+            background: var(--primary-grad);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* --- Profile/Earnings --- */
+        .stats {
+            background: var(--secondary);
+            color: white;
+            margin: 0 20px 20px;
+            padding: 25px;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-item h2 {
+            color: var(--primary);
+            font-family: 'Poppins';
+        }
+
+        /* --- Form --- */
+        .input-group {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #636e72;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #edeff2;
+            background: #fafbfc;
+            outline: none;
+        }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150%);
+            background: #1e272e;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            transition: 0.4s;
+            z-index: 20000;
+        }
+
+        #toast.active {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <h2 style="font-family:'Poppins'; color:var(--primary); font-size:2rem; margin-bottom:40px;">Delivery Hub
+            </h2>
+            <div style="display:flex; background:#f1f2f6; border-radius:50px; padding:5px; margin-bottom:30px;">
+                <div id="login-tab" style="flex:1; padding:12px; border-radius:50px; cursor:pointer;"
+                    onclick="setAuth('login')">Login</div>
+                <div id="signup-tab" style="flex:1; padding:12px; border-radius:50px; cursor:pointer;"
+                    onclick="setAuth('signup')">Sign Up</div>
+            </div>
+            <form id="auth-form">
+                <div id="signup-fields" style="display:none">
+                    <div class="input-group"><label>Full Name</label><input type="text" id="name"></div>
+                    <div class="input-group"><label>Vehicle (Bike/Scooter)</label><input type="text" id="vehicle"></div>
+                </div>
+                <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
+                <div class="input-group"><label>Password</label><input type="password" id="password" required></div>
+                <button type="submit" class="btn-big" id="auth-btn">Authenticate</button>
+            </form>
+        </div>
+    </div>
+
+    <header class="header">
+        <div>
+            <h3 id="courier-name">Courier Name</h3>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <p id="approval-status" style="font-size:0.7rem; font-weight:800;"></p>
+                <span style="font-size:0.65rem; color:var(--text-gray);">| help: contact@elitefood.com</span>
+            </div>
+        </div>
+        <div class="toggle-box">
+            <span>Online</span>
+            <div class="switch" id="online-switch" onclick="toggleOnline()"></div>
+        </div>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item">
+            <p>Total Earned</p>
+            <h2 id="total-earnings">₹0</h2>
+        </div>
+        <div class="stat-item">
+            <p>Jobs Done</p>
+            <h2 id="total-orders">0</h2>
+        </div>
+    </div>
+
+    <main class="feed" id="order-feed">
+        <p style="text-align:center; padding:50px; color:#636e72;">Looking for available shipments...</p>
+    </main>
+
+    <div
+        style="padding: 20px; background: white; box-shadow: 0 -10px 40px rgba(0,0,0,0.05); display: flex; justify-content: space-around;">
+        <div style="text-align:center; color:var(--primary);"><i class="fas fa-box"></i>
+            <p style="font-size:0.7rem; font-weight:700;">Orders</p>
+        </div>
+        <div style="text-align:center; color:#636e72;" onclick="logout()"><i class="fas fa-sign-out-alt"></i>
+            <p style="font-size:0.7rem; font-weight:700;">Exit</p>
+        </div>
+    </div>
+
+    <div id="toast">Logistics update synced.</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let isOnline = false;
+        let authMode = 'login';
+        const showToast = (msg) => { const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('active'); setTimeout(() => t.classList.remove('active'), 3000); };
+
+        window.setAuth = (mode) => {
+            authMode = mode;
+            document.getElementById('login-tab').style.background = mode === 'login' ? 'white' : 'none';
+            document.getElementById('signup-tab').style.background = mode === 'signup' ? 'white' : 'none';
+            document.getElementById('signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
+        }
+        setAuth('login');
+
+        document.getElementById('auth-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            try {
+                if (authMode === 'signup') {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await set(ref(db, `deliveryPartners/${res.user.uid}`), {
+                        name: document.getElementById('name').value,
+                        vehicle: document.getElementById('vehicle').value,
+                        email, approved: false, online: false
+                    });
+                } else { await signInWithEmailAndPassword(auth, email, pass); }
+            } catch (e) { alert(e.message); }
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                onValue(ref(db, `deliveryPartners/${user.uid}`), snap => {
+                    const d = snap.val() || {};
+                    document.getElementById('courier-name').innerText = d.name;
+                    document.getElementById('approval-status').innerText = d.approved ? 'AUTHENTICATED' : 'PENDING REVIEW';
+                    document.getElementById('approval-status').style.color = d.approved ? '#40c057' : '#fa5252';
+                    isOnline = d.online || false;
+                    document.getElementById('online-switch').classList.toggle('on', isOnline);
+                    loadShipments(user.uid);
+                });
+            } else { document.getElementById('auth-overlay').style.display = 'flex'; }
+        });
+
+        window.logout = () => signOut(auth);
+
+        window.toggleOnline = () => {
+            isOnline = !isOnline;
+            update(ref(db, `deliveryPartners/${auth.currentUser.uid}`), { online: isOnline });
+            showToast(isOnline ? "Awaiting Assignments" : "Session Terminated");
+        }
+
+        function loadShipments(uid) {
+            onValue(ref(db, 'orders'), snap => {
+                const feed = document.getElementById('order-feed');
+                feed.innerHTML = ''; const data = snap.val() || {};
+                let count = 0, earn = 0;
+                for (let id in data) {
+                    const o = data[id];
+                    if (o.deliveryUid === uid) {
+                        count++; if (o.status === 'DELIVERED') earn += 40; // Flat delivery fee
+                        if (o.status !== 'DELIVERED' && o.status !== 'CANCELLED') {
+                            feed.innerHTML += `
+                                <div class="order-card" style="border-left: 5px solid #40c057">
+                                    <span class="badge" style="background:#ebfbee; color:#40c057">Active Assignment</span>
+                                    <h4>Order #${id.slice(-6).toUpperCase()}</h4>
+                                    <p style="font-size:0.8rem; margin:10px 0;">Dest: ${o.address || 'Standard Location'}</p>
+                                    <div class="input-group" style="margin-bottom:15px;">
+                                        <input type="text" id="link-${id}" value="${o.locationLink || ''}" placeholder="Paste Google Maps Link">
+                                        <button class="btn-big" style="padding:10px; font-size:0.8rem;" onclick="saveLink('${id}')">Update My Location</button>
+                                    </div>
+                                    <div style="display:flex; gap:10px;">
+                                        ${o.status === 'READY_FOR_PICKUP' ? `<button class="btn-big" onclick="updateOrder('${id}','PICKED_UP')">Pick Up Package</button>` : ''}
+                                        ${o.status === 'PICKED_UP' ? `<button class="btn-big" onclick="updateOrder('${id}','OUT_FOR_DELIVERY')">Out for Delivery</button>` : ''}
+                                        ${o.status === 'OUT_FOR_DELIVERY' ? `<button class="btn-big" onclick="updateOrder('${id}','DELIVERED')">Mark Delivered</button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else if (o.status === 'READY_FOR_PICKUP' && !o.deliveryUid && isOnline) {
+                        feed.innerHTML += `
+                            <div class="order-card">
+                                <span class="badge" style="background:#fff9db; color:#f08c00">Available Job</span>
+                                <h4>New Delivery Request</h4>
+                                <p style="font-size:0.8rem; margin-top:5px;">Standard Payout: ₹40</p>
+                                <button class="btn-big" onclick="claimOrder('${id}')">Accept Dispatch</button>
+                            </div>
+                        `;
+                    }
+                }
+                document.getElementById('total-orders').innerText = count;
+                document.getElementById('total-earnings').innerText = '₹' + earn;
+            });
+        }
+
+        window.claimOrder = (id) => { update(ref(db, `orders/${id}`), { deliveryUid: auth.currentUser.uid }); showToast("Assignment secured."); };
+        window.updateOrder = (id, st) => { update(ref(db, `orders/${id}`), { status: st }); showToast("Fleet status updated."); };
+        window.saveLink = (id) => {
+            const link = document.getElementById(`link-${id}`).value;
+            update(ref(db, `orders/${id}`), { locationLink: link });
+            showToast("Navigation link broadcasted.");
+        };
+    </script>
+</body>
+
+</html>

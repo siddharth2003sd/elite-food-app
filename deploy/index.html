@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Food | Premium Delivery</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        :root {
+            --primary-grad: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            --secondary: #2f3542;
+            --white: #ffffff;
+            --bg-light: #f7f8fa;
+            --text-dark: #1e272e;
+            --text-gray: #747d8c;
+            --glass: rgba(255, 255, 255, 0.7);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-bold: 0 20px 40px rgba(255, 71, 87, 0.15);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff4757;
+            border-radius: 10px;
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            padding: 15px 30px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: #ff4757;
+        }
+
+        .company-section {
+            padding: 100px 10%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .company-content h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+        }
+
+        .company-card {
+            background: var(--bg-light);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            border: 1px solid #f1f2f6;
+            transition: var(--transition);
+        }
+
+        .company-card:hover {
+            background: white;
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-5px);
+        }
+
+        .company-card i {
+            font-size: 2rem;
+            color: #ff4757;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .btn-nav {
+            padding: 10px 25px;
+            background: var(--primary-grad);
+            color: white !important;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 10% 60px;
+            background: radial-gradient(circle at 80% 20%, #fff0f3 0%, #ffffff 50%);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: -5%;
+            width: 400px;
+            height: 400px;
+            background: #ff4757;
+            filter: blur(150px);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            flex: 1;
+            z-index: 1;
+            animation: fadeInLeft 1s ease;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #fff0f3;
+            color: #ff4757;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-content h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .hero-content h1 span {
+            color: #ff4757;
+            position: relative;
+        }
+
+        .hero-content h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 71, 87, 0.1);
+            z-index: -1;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            margin-bottom: 45px;
+            max-width: 550px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-luxury {
+            padding: 20px 45px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-grad);
+            color: white;
+            box-shadow: var(--shadow-bold);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(255, 71, 87, 0.25);
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--text-dark);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid #f1f2f6;
+        }
+
+        .btn-white:hover {
+            background: var(--bg-light);
+            transform: translateY(-5px);
+        }
+
+        .hero-img-container {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+            animation: fadeInRight 1s ease;
+        }
+
+        .hero-img-box {
+            position: relative;
+            width: 500px;
+            height: 600px;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 30px 30px 80px rgba(0, 0, 0, 0.1);
+            transform: rotate(3deg);
+            transition: var(--transition);
+        }
+
+        .hero-img-box:hover {
+            transform: rotate(0) scale(1.02);
+        }
+
+        .hero-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .f-card-1 {
+            bottom: 50px;
+            left: -50px;
+            z-index: 2;
+            animation-delay: 0s;
+        }
+
+        .f-card-2 {
+            top: 100px;
+            right: -30px;
+            z-index: 2;
+            animation-delay: 1s;
+        }
+
+        /* --- Portals Section --- */
+        .portals {
+            padding: 100px 10%;
+            background: var(--bg-light);
+            text-align: center;
+        }
+
+        .section-header {
+            margin-bottom: 70px;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .portal-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #f1f2f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--primary-grad);
+            transform: scaleX(0);
+            transition: var(--transition);
+            transform-origin: left;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 40px 70px rgba(0, 0, 0, 0.08);
+        }
+
+        .portal-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .portal-icon {
+            width: 80px;
+            height: 80px;
+            background: #fff0f3;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ff4757;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .portal-card:hover .portal-icon {
+            background: #ff4757;
+            color: white;
+            transform: rotateY(360deg);
+        }
+
+        .portal-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .portal-card p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 80px 10% 40px;
+            background: #11141a;
+            color: white;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-brand p {
+            color: #a4b0be;
+            max-width: 300px;
+        }
+
+        .footer-box h4 {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-box ul {
+            list-style: none;
+        }
+
+        .footer-box ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer-box ul li a {
+            color: #a4b0be;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer-box ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #747d8c;
+            font-size: 0.9rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 180px;
+                padding-bottom: 100px;
+            }
+
+            .hero-content h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero-content p {
+                margin: 0 auto 45px;
+            }
+
+            .cta-group {
+                justify-content: center;
+            }
+
+            .hero-img-container {
+                margin-top: 80px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-img-box {
+                width: 400px;
+                height: 500px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-img-box {
+                width: 300px;
+                height: 400px;
+            }
+
+            .f-card-1 {
+                left: 0;
+                bottom: 20px;
+                scale: 0.8;
+            }
+
+            .f-card-2 {
+                right: 0;
+                top: 50px;
+                scale: 0.8;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="animate__animated animate__fadeInDown">
+        <a href="index.html" class="logo">Elite Food</a>
+        <div class="nav-links">
+            <a href="#portals">Partners</a>
+            <a href="customer.html">Order</a>
+            <a href="customer.html" class="btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="hero-tag">Premium Experience</span>
+            <h1>The New Standard of <span>Food</span> Delivery.</h1>
+            <p>Savor the city's finest cuisines with our elite delivery network. Startup speed with premium flavor.</p>
+            <div class="cta-group">
+                <a href="customer.html" class="btn-luxury btn-primary">
+                    Order Gourmet <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="restaurant.html" class="btn-luxury btn-white">
+                    Partner With Us
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-img-container">
+            <div class="hero-img-box">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80"
+                    alt="Gourmet Pizza">
+            </div>
+
+            <div class="floating-card f-card-1">
+                <div
+                    style="background:#40c057; width:45px; height:45px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:white;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h5 style="font-weight:700">Fast Delivery</h5>
+                    <p style="font-size:0.8rem; color:#666">Under 25 Minutes</p>
+                </div>
+            </div>
+
+            <div class="floating-card f-card-2">
+                <div
+                    style="background:#ff9f43; width:45px; height:45px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:white;">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <h5 style="font-weight:700">Top Rated</h5>
+                    <p style="font-size:0.8rem; color:#666">4.9/5 Restaurant Score</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Company Section -->
+    <section class="company-section" id="about">
+        <div class="company-content">
+            <span class="hero-tag">Our Identity</span>
+            <h2>Redefining the <span>Future</span> of Dining.</h2>
+            <p style="color:var(--text-gray); font-size:1.1rem; margin-bottom:30px;">Elite Food began with a simple
+                mission: to bridge the gap between world-class kitchens and your doorstep. We don't just deliver food;
+                we deliver experiences.</p>
+        </div>
+        <div style="display:grid; gap:30px;">
+            <div class="company-card">
+                <i class="fas fa-history"></i>
+                <h3>About Us</h3>
+                <p style="color:var(--text-gray); font-size:0.9rem;">Founded in 2026, Elite Food has grown from a local
+                    startup to a premium delivery benchmark, focusing on quality, speed, and artisan support.</p>
+            </div>
+            <div class="company-card">
+                <i class="fas fa-eye"></i>
+                <h3>Our Vision</h3>
+                <p style="color:var(--text-gray); font-size:0.9rem;">To become the world's most trusted premium food
+                    ecosystem, empowering local chefs and satisfying global cravings with sustainable logistics.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portals Section -->
+    <section class="portals" id="portals">
+        <div class="section-header">
+            <span style="color:#ff4757; font-weight:700; text-transform:uppercase; letter-spacing:2px;">Our
+                Ecosystem</span>
+            <h2>Choose Your Portal</h2>
+        </div>
+
+        <div class="portal-grid">
+            <a href="customer.html" class="portal-card">
+                <div class="portal-icon"><i class="fas fa-utensils"></i></div>
+                <h3>Customer App</h3>
+                <p>Order from the best local restaurants and track your food in real-time.</p>
+                <span style="color:#ff4757; font-weight:700; display:flex; align-items:center; gap:8px;">Enter Dashboard
+                    <i class="fas fa-chevron-right"></i></span>
+            </a>
+
+            <a href="restaurant.html" class="portal-card">
+                <div class="portal-icon"><i class="fas fa-store"></i></div>
+                <h3>Restaurant Portal</h3>
+                <p>Join our partner network, manage orders, and grow your sales dashboard.</p>
+                <span style="color:#ff4757; font-weight:700; display:flex; align-items:center; gap:8px;">Join Partner <i
+                        class="fas fa-chevron-right"></i></span>
+            </a>
+
+            <a href="delivery.html" class="portal-card">
+                <div class="portal-icon"><i class="fas fa-bicycle"></i></div>
+                <h3>Delivery App</h3>
+                <p>Register as a delivery partner and earn on every successful delivery.</p>
+                <span style="color:#ff4757; font-weight:700; display:flex; align-items:center; gap:8px;">Start Earning
+                    <i class="fas fa-chevron-right"></i></span>
+            </a>
+
+            <a href="admin.html" class="portal-card">
+                <div class="portal-icon"><i class="fas fa-shield-halved"></i></div>
+                <h3>Admin Center</h3>
+                <p>Full control over platform operations, merchant approvals, and analytics.</p>
+                <span style="color:#ff4757; font-weight:700; display:flex; align-items:center; gap:8px;">Administrator
+                    <i class="fas fa-chevron-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h2>Elite Food</h2>
+                <p>Redefining delivery with luxury dining experiences brought straight to your door.</p>
+                <div style="display:flex; gap:15px; margin-top:30px;">
+                    <a href="#" style="color:#a4b0be; font-size:1.5rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:#a4b0be; font-size:1.5rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="#" style="color:#a4b0be; font-size:1.5rem;"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-box">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Our Vision</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-box">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-box">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="#">Mumbai, India</a></li>
+                    <li><a href="#">+91 900 123 4567</a></li>
+                    <li><a href="#">contact@elitefood.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Elite Food Technology Pvt Ltd. All rights reserved.</p>
+            <p>Careers | Press | Terms of Service</p>
+        </div>
+    </footer>
+
+    <!-- Reveal on Scroll Script -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.portal-card').forEach((card) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Seeder | Elite Food AI</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --primary-dark: #e84118;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            z-index: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #ff4757 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1);
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 20px 20px 20px 50px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        input::placeholder {
+            color: #475569;
+        }
+
+        .btn-seed {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-seed:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        .btn-seed:active {
+            transform: scale(0.98);
+        }
+
+        .status-box {
+            margin-top: 30px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-header h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        #logs {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .success-text {
+            color: #4ade80;
+        }
+
+        .error-text {
+            color: #f87171;
+        }
+
+        .info-text {
+            color: #60a5fa;
+        }
+
+        .suggestions {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .tag {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tag:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255, 71, 87, 0.05);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            transition: 0.4s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Seeder</h1>
+            <p>Type a cuisine to instantly populate your menu.</p>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-magic"></i>
+            <input type="text" id="command-input" placeholder="e.g. 'Add Japanese food' or 'Italian'">
+            <button class="btn-seed" id="seed-btn">
+                <i class="fas fa-bolt"></i> Spark Seed
+            </button>
+        </div>
+
+        <div class="progress-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="suggestions" id="suggestions">
+            <div class="tag" onclick="useTag('Japanese')">Japanese</div>
+            <div class="tag" onclick="useTag('Italian')">Italian</div>
+            <div class="tag" onclick="useTag('Mexican')">Mexican</div>
+            <div class="tag" onclick="useTag('Chinese')">Chinese</div>
+            <div class="tag" onclick="useTag('Indian')">Indian</div>
+            <div class="tag" onclick="useTag('Desserts')">Desserts</div>
+        </div>
+
+        <div class="status-box">
+            <div class="status-header">
+                <h3>Deployment Logs</h3>
+                <span id="item-count" style="font-size: 0.8rem; color: var(--text-muted)"></span>
+            </div>
+            <div id="logs">
+                <div class="log-entry info-text">System standby... Enter command to begin.</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const cuisineTemplates = {
+            "Italian": { prefix: ["Truffle", "Classic", "Artisan", "Rustic"], suffix: ["Pasta", "Risotto", "Lasagna", "Pizza", "Gnocchi"], img: "https://images.unsplash.com/photo-1546548970-71785318a17b" },
+            "Japanese": { prefix: ["Fresh", "Umami", "Kyoto", "Spicy"], suffix: ["Ramen", "Sushi Set", "Tempura", "Bento", "Udon"], img: "https://images.unsplash.com/photo-1553621042-f6e147245754" },
+            "Mexican": { prefix: ["Street", "Zesty", "Guacamole", "Chili"], suffix: ["Taco", "Burrito", "Enchilada", "Fajita", "Quesadilla"], img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47" },
+            "Chinese": { prefix: ["Golden", "Szechuan", "Imperial", "Ginger"], suffix: ["Dim Sum", "Dumplings", "Lo Mein", "Stir Fry", "Wonton"], img: "https://images.unsplash.com/photo-1563245332-6925469dec2f" },
+            "American": { prefix: ["BBQ", "Buffalo", "Gourmet", "Double"], suffix: ["Burger", "Wings", "Steak", "Ribs", "Milkshake"], img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90" },
+            "French": { prefix: ["Buttery", "Parisian", "Garlic", "Sweet"], suffix: ["Croissant", "Escargot", "Ratatouille", "Quiche", "Foundation"], img: "https://images.unsplash.com/photo-1608855238293-a8853e7f9c98" },
+            "Indian": { prefix: ["Masala", "Paneer", "Tandoori", "Curry"], suffix: ["Nan", "Biryani", "Kofte", "Tikka", "Samosa"], img: "https://images.unsplash.com/photo-1585937421612-70a008356fbe" },
+            "Mediterranean": { prefix: ["Greek", "Olive", "Hummus", "Lemon"], suffix: ["Salad", "Gyros", "Falafel", "Kebab", "Feta Wrap"], img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe" },
+            "Thai": { prefix: ["Coconut", "Lemongrass", "Pad", "Red"], suffix: ["Curry", "Noodles", "Soup", "Spring Rolls", "Satay"], img: "https://images.unsplash.com/photo-1559339352-11d035aa65de" },
+            "Spanish": { prefix: ["Seafood", "Smoked", "Chorizo", "Garlic"], suffix: ["Paella", "Tapas", "Gazpacho", "Tortilla", "Patatas"], img: "https://images.unsplash.com/photo-1512058560560-82603689408e" },
+            "Middle Eastern": { prefix: ["Spiced", "Tahini", "Lamb", "Floral"], suffix: ["Shawarma", "Hummus Plate", "Baklava", "Kofta", "Tabbouleh"], img: "https://images.unsplash.com/photo-1567223239210-981134a36f75" },
+            "Turkish": { prefix: ["Authentic", "Honey", "Charcoal", "Pistachio"], suffix: ["Kebab", "Delight", "Pide", "Lahmacun", "Borek"], img: "https://images.unsplash.com/photo-1567223239210-981134a36f75" },
+            "Korean": { prefix: ["Kimchi", "Bulgogi", "Fried", "Spicy"], suffix: ["Bibimbap", "Chicken", "Stew", "Pancake", "Galbi"], img: "https://images.unsplash.com/photo-1498654077810-12c21d4d6dc3" },
+            "Vietnamese": { prefix: ["Pho", "Fresh", "Imperial", "Herbal"], suffix: ["Noodle Soup", "Banh Mi", "Spring Rolls", "Coffee", "Rice Plate"], img: "https://images.unsplash.com/photo-1503767835115-9fe67104b971" },
+            "Desserts": { prefix: ["Velvet", "Dark", "Glazed", "Rainbow"], suffix: ["Cake", "Macarons", "Eclair", "Tart", "Sundae"], img: "https://images.unsplash.com/photo-1488477181946-6428a0291777" }
+        };
+
+        const logs = document.getElementById('logs');
+        const input = document.getElementById('command-input');
+        const btn = document.getElementById('seed-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+
+        window.useTag = (tag) => {
+            input.value = `Add ${tag} food`;
+            input.focus();
+        };
+
+        const addLog = (msg, type = 'info') => {
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}-text`;
+            div.innerHTML = `> ${msg}`;
+            logs.prepend(div);
+        };
+
+        btn.onclick = async () => {
+            const command = input.value.toLowerCase();
+            let selectedCuisine = null;
+
+            // Find cuisine in command
+            for (let cuisine in cuisineTemplates) {
+                if (command.includes(cuisine.toLowerCase())) {
+                    selectedCuisine = cuisine;
+                    break;
+                }
+            }
+
+            // Simple Price Parsing (e.g., "for 200", "@ 150", "at 500")
+            const priceMatch = command.match(/(?:for|at|@|\$|rs|₹)\s*(\d+)/);
+            const basePrice = priceMatch ? parseInt(priceMatch[1]) : null;
+
+            if (!selectedCuisine) {
+                addLog('Cuisine not recognized. Try "Japanese" or "Italian".', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            addLog(`Parsing command for ${selectedCuisine}${basePrice ? ` at base price ₹${basePrice}` : ''}...`, 'info');
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '10%';
+
+            try {
+                await signInAnonymously(auth);
+                addLog('Firebase Auth secure. Generating items...', 'success');
+                progressBar.style.width = '40%';
+
+                const template = cuisineTemplates[selectedCuisine];
+                const restId = 'res_' + selectedCuisine.toLowerCase().replace(' ', '_');
+                const allUpdates = {};
+                const generatedItems = [];
+
+                // Restaurant Entry
+                allUpdates[`restaurants/${restId}`] = {
+                    name: `${selectedCuisine} Elite Dining`,
+                    cuisine: selectedCuisine,
+                    email: `chef.${selectedCuisine.toLowerCase().replace(' ', '')}@elitefood.com`,
+                    imageUrl: template.img + "?auto=format&fit=crop&w=600&q=80",
+                    approved: true,
+                    description: `Experience the finest ${selectedCuisine} culinary traditions.`
+                };
+
+                // Generate 8 Menu Items
+                for (let i = 1; i <= 8; i++) {
+                    const prefix = template.prefix[Math.floor(Math.random() * template.prefix.length)];
+                    const suffix = template.suffix[Math.floor(Math.random() * template.suffix.length)];
+                    const itemId = `item_${restId}_${i}`;
+
+                    // Logic: If user gave price, vary it slightly (+/- 10%), else random 100-500
+                    const price = basePrice ?
+                        Math.max(10, Math.floor(basePrice * (0.9 + Math.random() * 0.2))) :
+                        Math.floor(Math.random() * (500 - 100) + 100);
+
+                    const name = `${prefix} ${suffix}`;
+                    allUpdates[`menus/${restId}/${itemId}`] = {
+                        name: name,
+                        description: `Our specialty ${prefix} ${suffix} prepared with authentic ingredients.`,
+                        price: price,
+                        imageUrl: template.img + `?auto=format&fit=crop&w=400&q=80&sig=${selectedCuisine}${i}`,
+                        available: true,
+                        category: selectedCuisine
+                    };
+                    generatedItems.push({ name, price });
+                }
+
+                addLog(`Injecting ${selectedCuisine} data into Realtime Database...`, 'info');
+                progressBar.style.width = '70%';
+
+                await update(ref(db), allUpdates);
+
+                progressBar.style.width = '100%';
+
+                // Detailed Success Log
+                let itemsList = generatedItems.map(it => `${it.name}: <b>₹${it.price}</b>`).join('<br>');
+                addLog(`<b>Success!</b> ${selectedCuisine} Elite Dining is live.<br><div style="margin-top:10px; opacity:0.8; font-size:0.8rem;">${itemsList}</div>`, 'success');
+                document.getElementById('item-count').innerText = 'Last: 9 records added';
+
+            } catch (err) {
+                if (err.code === 'auth/admin-restricted-operation' || err.code === 'auth/operation-not-allowed') {
+                    addLog(`<b>Auth Error:</b> Please enable "Anonymous Login" in your Firebase Console (Authentication > Sign-in method).`, 'error');
+                } else {
+                    addLog(`Critical Error: ${err.message}`, 'error');
+                }
+            } finally {
+                btn.disabled = false;
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressBar.style.width = '0%';
+                }, 2000);
+            }
+        };
+
+        input.onkeypress = (e) => { if (e.key === 'Enter') btn.click(); };
+    </script>
+</body>
+
+</html>

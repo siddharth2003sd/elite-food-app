@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Elite Food Data Seeder</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 50px;
+            text-align: center;
+        }
+
+        #log {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Elite Food Data Seeder</h1>
+    <p>This will populate your database with sample restaurants and affordable Indian dishes.</p>
+    <button id="seed-btn"
+        style="padding: 15px 30px; font-size: 1rem; cursor: pointer; background: #ff4757; color: white; border: none; border-radius: 10px;">Seed
+        Database Now</button>
+    <div id="log"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const log = document.getElementById('log');
+
+        const addLog = (msg, cls) => {
+            const p = document.createElement('p');
+            p.innerText = msg;
+            if (cls) p.className = cls;
+            log.appendChild(p);
+        };
+
+        const sampleData = {
+            restaurants: {
+                "rest_001": {
+                    name: "Desi Dhaba",
+                    cuisine: "North Indian, Tandoori",
+                    address: "MG Road, Mumbai",
+                    email: "dhaba@elitefood.com",
+                    approved: true,
+                    imageUrl: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=600&q=80"
+                },
+                "rest_002": {
+                    name: "South Spice",
+                    cuisine: "South Indian, Dosa Specialist",
+                    address: "HSR Layout, Bangalore",
+                    email: "spice@elitefood.com",
+                    approved: true,
+                    imageUrl: "https://images.unsplash.com/photo-1626776876729-babd0f23583a?auto=format&fit=crop&w=600&q=80"
+                },
+                "rest_003": {
+                    name: "Bites of Bengal",
+                    cuisine: "Bengali Sweets & Snacks",
+                    address: "Salt Lake, Kolkata",
+                    email: "bengal@elitefood.com",
+                    approved: true,
+                    imageUrl: "https://images.unsplash.com/photo-1621510456681-23a016df2404?auto=format&fit=crop&w=600&q=80"
+                }
+            },
+            menus: {
+                "rest_001": {
+                    "item_1": { name: "Paneer Tikka Masala", price: 180, description: "Char-grilled paneer in spicy gravy", available: true, imageUrl: "https://images.unsplash.com/photo-1567184109411-b29f45f3e74c?auto=format&fit=crop&w=200&q=80" },
+                    "item_2": { name: "Butter Chicken", price: 220, description: "Classic creamy chicken curry", available: true, imageUrl: "https://images.unsplash.com/photo-1603894584110-3882f24bc985?auto=format&fit=crop&w=200&q=80" },
+                    "item_3": { name: "Dal Makhani", price: 150, description: "Slow-cooked black lentils", available: true, imageUrl: "https://images.unsplash.com/photo-1546833999-b9f123ffcc9d?auto=format&fit=crop&w=200&q=80" },
+                    "item_4": { name: "Garlic Naan", price: 40, description: "Soft clay oven bread", available: true, imageUrl: "https://images.unsplash.com/photo-1601050690597-df056fb04791?auto=format&fit=crop&w=200&q=80" }
+                },
+                "rest_002": {
+                    "item_5": { name: "Masala Dosa", price: 80, description: "Crispy crepe with potato filling", available: true, imageUrl: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=200&q=80" },
+                    "item_6": { name: "Idli Sambar (2pcs)", price: 50, description: "Steamed rice cakes", available: true, imageUrl: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=200&q=80" },
+                    "item_7": { name: "Medhu Vada", price: 60, description: "Savory lentil donuts", available: true, imageUrl: "https://images.unsplash.com/photo-1601050690597-df056fb04791?auto=format&fit=crop&w=200&q=80" }
+                },
+                "rest_003": {
+                    "item_8": { name: "Rasgulla (2pcs)", price: 40, description: "Soft spongy cheese balls", available: true, imageUrl: "https://images.unsplash.com/photo-1589112206532-620ca946f82e?auto=format&fit=crop&w=200&q=80" },
+                    "item_9": { name: "Gulab Jamun (2pcs)", price: 50, description: "Fried milk solids in syrup", available: true, imageUrl: "https://images.unsplash.com/photo-1593560704459-7e5de501e52f?auto=format&fit=crop&w=200&q=80" },
+                    "item_10": { name: "Vada Pav", price: 30, description: "Classic Indian street burger", available: true, imageUrl: "https://images.unsplash.com/photo-1606491956689-2ea8c5369512?auto=format&fit=crop&w=200&q=80" }
+                }
+            }
+        };
+
+        document.getElementById('seed-btn').onclick = async () => {
+            log.innerHTML = '';
+            addLog("Starting seeding process...");
+
+            try {
+                // Seed Restaurants
+                for (let id in sampleData.restaurants) {
+                    await set(ref(db, `restaurants/${id}`), sampleData.restaurants[id]);
+                    addLog(`Added restaurant: ${sampleData.restaurants[id].name}`, 'success');
+                }
+
+                // Seed Menus
+                for (let rid in sampleData.menus) {
+                    await set(ref(db, `menus/${rid}`), sampleData.menus[rid]);
+                    addLog(`Added menu items for restaurant ID: ${rid}`, 'success');
+                }
+
+                addLog("✨ Seeding Completed Successfully! You can now browse these in the Customer App.", "success");
+            } catch (e) {
+                addLog(`Error: ${e.message}`, 'error');
+            }
+        };
+    </script>
+</body>
+
+</html>

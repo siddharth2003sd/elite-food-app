@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Global Data Seeder | Elite Food</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            padding: 40px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            display: inline-block;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #ff4757;
+        }
+
+        .progress {
+            margin: 20px 0;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            background: #ff4757;
+            width: 0%;
+            transition: 0.3s;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #logs {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 0.8rem;
+            background: #f1f2f6;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Global Menu Seeder</h1>
+        <p>This will inject 100+ premium food items across 15 world cuisines into your Firebase database.</p>
+        <div class="progress">
+            <div class="bar" id="progress-bar"></div>
+        </div>
+        <button id="seed-btn">Initiate Massive Seed</button>
+        <div id="logs">Ready to begin...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const cuisines = [
+            "Italian", "Japanese", "Mexican", "Chinese", "American",
+            "French", "Indian", "Mediterranean", "Thai", "Spanish",
+            "Middle Eastern", "Turkish", "Korean", "Vietnamese", "Desserts"
+        ];
+
+        const cuisineTemplates = {
+            "Italian": { prefix: ["Truffle", "Classic", "Artisan", "Rustic"], suffix: ["Pasta", "Risotto", "Lasagna", "Pizza", "Gnocchi"], img: "https://images.unsplash.com/photo-1546548970-71785318a17b" },
+            "Japanese": { prefix: ["Fresh", "Umami", "Kyoto", "Spicy"], suffix: ["Ramen", "Sushi Set", "Tempura", "Bento", "Udon"], img: "https://images.unsplash.com/photo-1553621042-f6e147245754" },
+            "Mexican": { prefix: ["Street", "Zesty", "Guacamole", "Chili"], suffix: ["Taco", "Burrito", "Enchilada", "Fajita", "Quesadilla"], img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47" },
+            "Chinese": { prefix: ["Golden", "Szechuan", "Imperial", "Ginger"], suffix: ["Dim Sum", "Dumplings", "Lo Mein", "Stir Fry", "Wonton"], img: "https://images.unsplash.com/photo-1563245332-6925469dec2f" },
+            "American": { prefix: ["BBQ", "Buffalo", "Gourmet", "Double"], suffix: ["Burger", "Wings", "Steak", "Ribs", "Milkshake"], img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90" },
+            "French": { prefix: ["Buttery", "Parisian", "Garlic", "Sweet"], suffix: ["Croissant", "Escargot", "Ratatouille", "Quiche", "Foundation"], img: "https://images.unsplash.com/photo-1608855238293-a8853e7f9c98" },
+            "Indian": { prefix: ["Masala", "Paneer", "Tandoori", "Curry"], suffix: ["Nan", "Biryani", "Kofte", "Tikka", "Samosa"], img: "https://images.unsplash.com/photo-1585937421612-70a008356fbe" },
+            "Mediterranean": { prefix: ["Greek", "Olive", "Hummus", "Lemon"], suffix: ["Salad", "Gyros", "Falafel", "Kebab", "Feta Wrap"], img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe" },
+            "Thai": { prefix: ["Coconut", "Lemongrass", "Pad", "Red"], suffix: ["Curry", "Noodles", "Soup", "Spring Rolls", "Satay"], img: "https://images.unsplash.com/photo-1559339352-11d035aa65de" },
+            "Spanish": { prefix: ["Seafood", "Smoked", "Chorizo", "Garlic"], suffix: ["Paella", "Tapas", "Gazpacho", "Tortilla", "Patatas"], img: "https://images.unsplash.com/photo-1512058560560-82603689408e" },
+            "Middle Eastern": { prefix: ["Spiced", "Tahini", "Lamb", "Floral"], suffix: ["Shawarma", "Hummus Plate", "Baklava", "Kofta", "Tabbouleh"], img: "https://images.unsplash.com/photo-1567223239210-981134a36f75" },
+            "Turkish": { prefix: ["Authentic", "Honey", "Charcoal", "Pistachio"], suffix: ["Kebab", "Delight", "Pide", "Lahmacun", "Borek"], img: "https://images.unsplash.com/photo-1567223239210-981134a36f75" },
+            "Korean": { prefix: ["Kimchi", "Bulgogi", "Fried", "Spicy"], suffix: ["Bibimbap", "Chicken", "Stew", "Pancake", "Galbi"], img: "https://images.unsplash.com/photo-1498654077810-12c21d4d6dc3" },
+            "Vietnamese": { prefix: ["Pho", "Fresh", "Imperial", "Herbal"], suffix: ["Noodle Soup", "Banh Mi", "Spring Rolls", "Coffee", "Rice Plate"], img: "https://images.unsplash.com/photo-1503767835115-9fe67104b971" },
+            "Desserts": { prefix: ["Velvet", "Dark", "Glazed", "Rainbow"], suffix: ["Cake", "Macarons", "Eclair", "Tart", "Sundae"], img: "https://images.unsplash.com/photo-1488477181946-6428a0291777" }
+        };
+
+        const logs = document.getElementById('logs');
+        const bar = document.getElementById('progress-bar');
+
+        document.getElementById('seed-btn').onclick = async () => {
+            const btn = document.getElementById('seed-btn');
+            btn.disabled = true;
+            logs.innerHTML = "Authenticating with Firebase...<br>";
+
+            try {
+                await signInAnonymously(auth);
+                logs.innerHTML += "Session secured. Preparing data (100 items)...<br>";
+
+                const allUpdates = {};
+                let total = cuisines.length;
+                let current = 0;
+
+                for (let cuisine of cuisines) {
+                    const template = cuisineTemplates[cuisine];
+                    const restId = 'res_' + cuisine.toLowerCase().replace(' ', '_');
+
+                    allUpdates[`restaurants/${restId}`] = {
+                        name: `${cuisine} Elite Dining`,
+                        cuisine: cuisine,
+                        email: `chef.${cuisine.toLowerCase().replace(' ', '')}@elitefood.com`,
+                        imageUrl: template.img + "?auto=format&fit=crop&w=600&q=80",
+                        approved: true,
+                        description: `Experience the finest ${cuisine} culinary traditions.`
+                    };
+
+                    for (let i = 1; i <= 7; i++) {
+                        const prefix = template.prefix[Math.floor(Math.random() * template.prefix.length)];
+                        const suffix = template.suffix[Math.floor(Math.random() * template.suffix.length)];
+                        const itemId = `item_${restId}_${i}`;
+
+                        allUpdates[`menus/${restId}/${itemId}`] = {
+                            name: `${prefix} ${suffix} - Spec ${i}`,
+                            description: `Our specialty ${prefix} ${suffix} prepared with authentic ingredients.`,
+                            price: Math.floor(Math.random() * (500 - 50) + 50),
+                            imageUrl: template.img + `?auto=format&fit=crop&w=400&q=80&sig=${cuisine}${i}`,
+                            available: true,
+                            category: cuisine
+                        };
+                    }
+
+                    current++;
+                    logs.innerHTML += `Prepared ${cuisine} data...<br>`;
+                    bar.style.width = (current / total * 50) + '%';
+                }
+
+                logs.innerHTML += "Synchronizing with Database...<br>";
+                await update(ref(db), allUpdates);
+                bar.style.width = '100%';
+                logs.innerHTML += "<br>✅ 100+ Items Seeded Successfully!";
+                btn.innerText = "Seed Complete";
+            } catch (err) {
+                logs.innerHTML += `<br>❌ Error: ${err.message}. If this is an Auth Error, enable 'Anonymous Login' in Firebase.`;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

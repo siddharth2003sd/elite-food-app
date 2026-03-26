@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Food Admin | Startup Control</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --primary-grad: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            --secondary: #2f3542;
+            --sidebar-bg: #1e272e;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-gray: #636e72;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Login Section --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e272e 0%, #2f3542 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: white;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card h1 {
+            font-family: 'Poppins';
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .login-card p {
+            color: #a4b0be;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: #ced4da;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-premium {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary-grad);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4);
+        }
+
+        /* --- Dashboard Layout --- */
+        .admin-layout {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            font-family: 'Poppins';
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 50px;
+            padding: 0 15px;
+        }
+
+        .nav-list {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #a4b0be;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            width: 25px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.active {
+            border-right: 4px solid var(--primary);
+            background: linear-gradient(90deg, rgba(255, 71, 87, 0.1) 0%, transparent 100%);
+        }
+
+        .logout-btn {
+            color: #ff6b81;
+            cursor: pointer;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header h2 {
+            font-family: 'Poppins';
+            font-size: 1.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card p {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-top: 10px;
+            color: var(--text-main);
+        }
+
+        .stat-card i {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.05;
+        }
+
+        /* --- Custom Table --- */
+        .content-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #f1f2f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h4 {
+            font-family: 'Poppins';
+            font-size: 1.1rem;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 20px 30px;
+            background: #fafbfc;
+            color: var(--text-gray);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        td {
+            padding: 20px 30px;
+            border-bottom: 1px solid #f8fafc;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pending {
+            background: #fff9db;
+            color: #f08c00;
+        }
+
+        .badge-success {
+            background: #ebfbee;
+            color: #40c057;
+        }
+
+        .badge-danger {
+            background: #fff5f5;
+            color: #fa5252;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .btn-approve {
+            background: #40c057;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .btn-reject {
+            background: #fa5252;
+            color: white;
+        }
+
+        /* --- Sections Visibility --- */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Notifications Section --- */
+        .notif-box {
+            padding: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            border: 1px solid #edeff2;
+            padding: 20px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        /* --- Toast --- */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: var(--sidebar-bg);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(150%);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10000;
+        }
+
+        #toast.active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Premium Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>Admin Gateway</h1>
+            <p>Startup Control Center</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Corporate Email</label>
+                    <input type="email" id="email" value="admin@elitefood.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Access Key</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-premium">Authenticate Account</button>
+                <p id="error-msg" style="color:#ff6b81; font-size:0.8rem; margin-top:20px; display:none;"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Elite Food</div>
+            <ul class="nav-list">
+                <li class="nav-item active" data-view="dashboard"><i class="fas fa-grid-2"></i> Dashboard</li>
+                <li class="nav-item" data-view="restaurants"><i class="fas fa-store"></i> Merchant Approvals</li>
+                <li class="nav-item" data-view="delivery"><i class="fas fa-motorcycle"></i> Logistics Partners</li>
+                <li class="nav-item" data-view="orders"><i class="fas fa-shopping-cart"></i> Universal Orders</li>
+                <li class="nav-item" data-view="notifications"><i class="fas fa-bullhorn"></i> System Broadcast</li>
+                <li class="nav-item" onclick="window.open('smart_seeder.html', '_blank')"><i class="fas fa-magic"></i>
+                    Smart Seeder <span class="badge"
+                        style="background:#ff4757; color:white; font-size:0.6rem; margin-left:5px;">Dev</span></li>
+            </ul>
+
+            <div
+                style="margin-top:auto; background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; font-size:0.75rem; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
+                <p style="color:var(--primary); font-weight:700; margin-bottom:5px;">System Tech Support</p>
+                <p>contact@elitefood.com</p>
+                <p>Mumbai HQ | +91 900 123 4567</p>
+            </div>
+            <div class="logout-btn" id="logout">
+                <i class="fas fa-sign-out-alt"></i> Terminate Session
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2 id="view-title">Executive Summary</h2>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div style="text-align:right">
+                        <p style="font-weight:700; font-size:0.9rem;">System Architect</p>
+                        <p id="admin-user" style="color:var(--text-gray); font-size:0.75rem;">admin@elitefood.com</p>
+                    </div>
+                    <div
+                        style="width:45px; height:45px; background:var(--primary-grad); border-radius:12px; display:flex; align-items:center; justify-content:center; color:white;">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p>Universal Orders</p>
+                        <h3 id="stat-orders">0</h3>
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-card">
+                        <p>Merchant Network</p>
+                        <h3 id="stat-restaurants">0</h3>
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <div class="stat-card">
+                        <p>Logistics Fleet</p>
+                        <h3 id="stat-delivery">0</h3>
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+                    <div class="stat-card">
+                        <p>Projected Revenue</p>
+                        <h3 id="stat-revenue">₹0</h3>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h4>Recent Transactions</h4>
+                        <span style="color:var(--primary); font-size:0.8rem; font-weight:700; cursor:pointer;">View All
+                            <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                    <div class="table-container">
+                        <table id="recent-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref ID</th>
+                                    <th>Client</th>
+                                    <th>Merchant</th>
+                                    <th>Value</th>
+                                    <th>Workflow Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Merchant View -->
+            <section id="view-restaurants" class="view-section">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h4>Partner Onboarding Pipeline</h4>
+                    </div>
+                    <div class="table-container">
+                        <table id="merchants-table">
+                            <thead>
+                                <tr>
+                                    <th>Entity Name</th>
+                                    <th>Identification</th>
+                                    <th>Cuisine Type</th>
+                                    <th>Status</th>
+                                    <th>Verification</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Delivery View -->
+            <section id="view-delivery" class="view-section">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h4>Courier Network Requests</h4>
+                    </div>
+                    <div class="table-container">
+                        <table id="couriers-table">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Vehicle Class</th>
+                                    <th>Status</th>
+                                    <th>Credentialing</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders View -->
+            <section id="view-orders" class="view-section">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h4>Global Order Management</h4>
+                    </div>
+                    <div class="table-container">
+                        <table id="global-orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Ref</th>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>Settlement</th>
+                                    <th>Status</th>
+                                    <th>Control</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications View -->
+            <section id="view-notifications" class="view-section">
+                <div class="content-card notif-box">
+                    <h4>Broadcast System Alert</h4>
+                    <p style="color:var(--text-gray); font-size:0.85rem; margin-top:10px; margin-bottom:20px;">This
+                        message will be visible to all logged-in stakeholders.</p>
+                    <textarea id="notif-msg" placeholder="Type broadcast message here..."></textarea>
+                    <button class="btn-premium" id="send-broadcast">Initiate Broadcast</button>
+
+                    <h4 style="margin-top:50px;">Previous Logs</h4>
+                    <div id="notif-history" style="margin-top:20px;"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast">Message Sentinel: System updated.</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, update, push, remove, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { firebaseConfig } from "./firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const showToast = (msg) => {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.classList.add('active');
+            setTimeout(() => t.classList.remove('active'), 3000);
+        };
+
+        // --- Auth Guard ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('admin-user').innerText = user.email;
+                initDashboard();
+            } else {
+                document.getElementById('login-overlay').style.display = 'flex';
+            }
+        });
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const err = document.getElementById('error-msg');
+            btn.innerText = "Authenticating...";
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
+            } catch (e) {
+                err.innerText = e.message; err.style.display = 'block';
+                btn.innerText = "Try Again";
+            }
+        };
+
+        document.getElementById('logout').onclick = () => signOut(auth);
+
+        // --- Navigation ---
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.onclick = () => {
+                const view = item.getAttribute('data-view');
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`view-${view}`).classList.add('active');
+                document.getElementById('view-title').innerText = item.innerText;
+                loadViewData(view);
+            };
+        });
+
+        // --- Data Logic ---
+        function initDashboard() { loadViewData('dashboard'); }
+
+        function loadViewData(view) {
+            if (view === 'dashboard') {
+                onValue(ref(db, 'orders'), snap => {
+                    const orders = snap.val() || {};
+                    const list = Object.values(orders);
+                    document.getElementById('stat-orders').innerText = list.length;
+                    document.getElementById('stat-revenue').innerText = '₹' + list.reduce((acc, o) => acc + (o.status === 'DELIVERED' ? o.totalAmount : 0), 0);
+
+                    const tbody = document.querySelector('#recent-orders-table tbody');
+                    tbody.innerHTML = '';
+                    Object.keys(orders).reverse().slice(0, 8).forEach(id => {
+                        const o = orders[id];
+                        tbody.innerHTML += `<tr>
+                            <td style="font-weight:700">#${id.slice(-6).toUpperCase()}</td>
+                            <td>${o.customerUid ? 'UID:' + o.customerUid.slice(-4) : 'Guest'}</td>
+                            <td>${o.restaurantId ? 'MID:' + o.restaurantId.slice(-4) : 'N/A'}</td>
+                            <td style="font-weight:700">₹${o.totalAmount}</td>
+                            <td><span class="badge badge-pending">${o.status}</span></td>
+                        </tr>`;
+                    });
+                });
+                onValue(ref(db, 'restaurants'), snap => document.getElementById('stat-restaurants').innerText = Object.keys(snap.val() || {}).length);
+                onValue(ref(db, 'deliveryPartners'), snap => document.getElementById('stat-delivery').innerText = Object.keys(snap.val() || {}).length);
+            }
+
+            if (view === 'restaurants') {
+                onValue(ref(db, 'restaurants'), snap => {
+                    const tbody = document.querySelector('#merchants-table tbody');
+                    tbody.innerHTML = ''; const data = snap.val() || {};
+                    for (let id in data) {
+                        const item = data[id];
+                        tbody.innerHTML += `<tr>
+                            <td>${item.name}</td>
+                            <td>${item.email}</td>
+                            <td>${item.cuisine || 'Generic'}</td>
+                            <td><span class="badge ${item.approved ? 'badge-success' : 'badge-pending'}">${item.approved ? 'Verified' : 'Pending'}</span></td>
+                            <td>
+                                ${!item.approved ? `<button class="action-btn btn-approve" onclick="verify('restaurants','${id}')">Verify</button>` : ''}
+                                <button class="action-btn btn-reject" onclick="purge('restaurants','${id}')">Purge</button>
+                            </td>
+                        </tr>`;
+                    }
+                });
+            }
+
+            if (view === 'delivery') {
+                onValue(ref(db, 'deliveryPartners'), snap => {
+                    const tbody = document.querySelector('#couriers-table tbody');
+                    tbody.innerHTML = ''; const data = snap.val() || {};
+                    for (let id in data) {
+                        const item = data[id];
+                        tbody.innerHTML += `<tr>
+                            <td>${item.name}</td>
+                            <td>${item.vehicle || 'N/A'}</td>
+                            <td><span class="badge ${item.approved ? 'badge-success' : 'badge-pending'}">${item.approved ? 'Approved' : 'Under Review'}</span></td>
+                            <td>
+                                ${!item.approved ? `<button class="action-btn btn-approve" onclick="verify('deliveryPartners','${id}')">Approve</button>` : ''}
+                                <button class="action-btn btn-reject" onclick="purge('deliveryPartners','${id}')">Remove</button>
+                            </td>
+                        </tr>`;
+                    }
+                });
+            }
+
+            if (view === 'orders') {
+                onValue(ref(db, 'orders'), snap => {
+                    const tbody = document.querySelector('#global-orders-table tbody');
+                    tbody.innerHTML = ''; const data = snap.val() || {};
+                    for (let id in data) {
+                        const o = data[id];
+                        tbody.innerHTML += `<tr>
+                            <td style="font-weight:700">#${id.slice(-6).toUpperCase()}</td>
+                            <td>${o.customerName || 'Guest'}</td>
+                            <td>${o.customerPhone || 'N/A'}</td>
+                            <td>${o.deliveryAddress || 'N/A'}</td>
+                            <td style="font-weight:700">₹${o.totalAmount}</td>
+                            <td><span class="badge ${o.status === 'DELIVERED' ? 'badge-success' : 'badge-pending'}">${o.status}</span></td>
+                            <td><button class="action-btn btn-reject" onclick="cancelOrder('${id}')">Cancel</button></td>
+                        </tr>`;
+                    }
+                });
+            }
+        }
+
+        window.verify = (path, id) => { update(ref(db, `${path}/${id}`), { approved: true }); showToast("Credential verified."); };
+        window.purge = (path, id) => { if (confirm("Purge entry?")) { remove(ref(db, `${path}/${id}`)); showToast("Entry purged."); } };
+        window.cancelOrder = (id) => { update(ref(db, `orders/${id}`), { status: 'CANCELLED' }); showToast("Order terminated."); };
+
+        document.getElementById('send-broadcast').onclick = () => {
+            const msg = document.getElementById('notif-msg').value;
+            if (!msg) return;
+            push(ref(db, 'admin/notifications'), { message: msg, createdAt: Date.now() });
+            document.getElementById('notif-msg').value = ''; showToast("Broadcast initiated.");
+        };
+
+        onValue(ref(db, 'admin/notifications'), snap => {
+            const container = document.getElementById('notif-history');
+            container.innerHTML = ''; const data = snap.val() || {};
+            Object.values(data).reverse().slice(0, 10).forEach(n => {
+                container.innerHTML += `<div style="background:#fafbfc; padding:15px; border-radius:10px; margin-bottom:10px; border-left:4px solid var(--primary)">
+                    <p style="font-size:0.9rem">${n.message}</p>
+                    <p style="font-size:0.7rem; color:var(--text-gray); margin-top:5px;">${new Date(n.createdAt).toLocaleString()}</p>
+                </div>`;
+            });
+        });
+    </script>
+</body>
+
+</html>
