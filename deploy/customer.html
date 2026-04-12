@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Food | Your App</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Leaflet Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -23,26 +23,33 @@
         }
 
         :root {
-            --primary: #ff4757;
-            --primary-grad: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-            --secondary: #2f3542;
-            --bg-body: #f7f8fa;
+            --primary: #C0392B;
+            --primary-grad: linear-gradient(135deg, #E63946 0%, #900C3F 100%);
+            --secondary: #0B0F19;
+            --bg-body: #FAFAFA;
             --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-gray: #636e72;
+            --text-main: #1A1D20;
+            --text-gray: #6C757D;
             --radius-xl: 30px;
             --radius-lg: 20px;
             --radius-md: 12px;
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow-bold: 0 20px 40px rgba(144, 12, 63, 0.2);
+            --transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        h1, h2, h3, h4, h5, .auth-logo, .section-title, .user-info h3, .item-details h5, .rest-info h4 {
+            font-family: 'Playfair Display', serif !important;
+            letter-spacing: -0.3px;
         }
 
         body {
@@ -338,13 +345,16 @@
             transform: translateX(-50%);
             width: calc(100% - 40px);
             max-width: 500px;
-            background: #1e272e;
-            border-radius: 25px;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 35px;
             padding: 10px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
 
@@ -665,7 +675,7 @@
                 <i class="fas fa-clock" style="font-size:1.5rem;"></i>
                 <div>
                     <h5 style="font-family:'Poppins';">Delivery Timing</h5>
-                    <p style="font-size:0.75rem; opacity:0.9;">We are available: 09:00 AM - 11:00 PM IST</p>
+                    <p style="font-size:0.75rem; opacity:0.9;">We are available: 09:00 AM - 04:00 PM IST</p>
                 </div>
             </div>
 
